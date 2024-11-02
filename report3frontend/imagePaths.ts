@@ -1,0 +1,1 @@
+export const IMAGE_PATHS = ["/water_case.jpg","/candy.jpg","/coffee.jpg","/handsoap.jpg","/sharpie.jpg","/toothbrush.jpg"]
