@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
 // Custom imports
-import { USER_LOGIN }from '../flaskEndpoints';
+import { USER_LOGIN } from "@/utilites/flaskEndpoints";
 
 interface FormData {
   email:string;

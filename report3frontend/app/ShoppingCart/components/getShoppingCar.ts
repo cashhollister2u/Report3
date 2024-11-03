@@ -1,6 +1,6 @@
 //Custom Imports
-import { SHOPPING_CART } from '@/flaskEndpoints';
-import { Cart, CartItem } from '@/types';
+import { SHOPPING_CART } from '@/utilites/flaskEndpoints';
+import { Cart, CartItem } from '@/utilites/types';
 
 const getShoppingCart = async (access_token:string, customer_id: string): Promise<any> => {
     const nullCartItem: CartItem[] = 

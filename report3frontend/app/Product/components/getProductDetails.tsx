@@ -1,8 +1,8 @@
 
 //Custom Imports
-import { PRODUCT_DETAILS } from '@/flaskEndpoints';
-import { IMAGE_PATHS } from '@/imagePaths';
-import { Product } from '@/types';
+import { PRODUCT_DETAILS } from '@/utilites/flaskEndpoints';
+import { IMAGE_PATHS } from '@/utilites/imagePaths';
+import { Product } from '@/utilites/types';
 
 interface Response {
   product: Product

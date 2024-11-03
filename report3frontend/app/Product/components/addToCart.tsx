@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 
 // Custom imports
-import { ADD_TO_CART } from '@/flaskEndpoints';
+import { ADD_TO_CART } from '@/utilites/flaskEndpoints';
   
 
 const addToCart = async (e: FormEvent, customer_id:string, product_id:string, access_token:string) => {

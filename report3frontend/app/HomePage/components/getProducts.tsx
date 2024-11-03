@@ -1,7 +1,7 @@
 
 //Custom Imports
-import { AMAZON_PRODUCTS } from '@/flaskEndpoints';
-import { Product } from '@/types';
+import { AMAZON_PRODUCTS } from '@/utilites/flaskEndpoints';
+import { Product } from '@/utilites/types';
 
 
 const getProducts = async (access_token:string): Promise<Product[]> => {

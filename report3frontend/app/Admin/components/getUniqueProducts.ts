@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 
 // Custom imports
-import { UNIQUE_CART_ITEMS }from '@/flaskEndpoints';
+import { UNIQUE_CART_ITEMS }from '@/utilites/flaskEndpoints';
   
 
 const getUniqueProducts = async (e: FormEvent, setCustomerIds: (customer_ids: string[]) => void) => {

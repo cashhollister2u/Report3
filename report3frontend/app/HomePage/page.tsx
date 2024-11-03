@@ -6,9 +6,9 @@ import Link from 'next/link';
 import Cookies from 'js-cookie';
 
 //custom imports 
-import { IMAGE_PATHS } from '@/imagePaths';
+import { IMAGE_PATHS } from '@/utilites/imagePaths';
 import getProducts from './components/getProducts';
-import { Product } from '@/types';
+import { Product } from '@/utilites/types';
 
 export default function HomePage() {
   const router = useRouter();

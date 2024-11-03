@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 
 // Custom imports
-import { REMOVE_FROM_CART } from '@/flaskEndpoints';
+import { REMOVE_FROM_CART } from '@/utilites/flaskEndpoints';
   
 
 const removeProduct = async (e: FormEvent, customer_id:string, product_id:number, access_token:string) => {

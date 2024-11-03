@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 
 // Custom imports
-import { UPDATE_PRICE }from '@/flaskEndpoints';
+import { UPDATE_PRICE }from '@/utilites/flaskEndpoints';
   
 
 const changePrice = async (e: FormEvent, product_id:string, new_price:string, setPriceMessage: (message: string) => void) => {

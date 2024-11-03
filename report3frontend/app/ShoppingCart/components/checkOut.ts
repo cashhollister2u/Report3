@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 
 // Custom imports
-import { CHECK_OUT } from '@/flaskEndpoints';
+import { CHECK_OUT } from '@/utilites/flaskEndpoints';
   
 
 const checkOut = async (e: FormEvent, customer_id:string, access_token:string) => {

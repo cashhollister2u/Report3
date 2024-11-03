@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 // custom imports 
 import getProductDetails from './components/getProductDetails';
 import addToCart from './components/addToCart';
-import { Product } from '@/types';
+import { Product } from '@/utilites/types';
 
 
 export default function ProductPage()  {

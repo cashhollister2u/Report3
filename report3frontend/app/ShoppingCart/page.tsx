@@ -6,12 +6,12 @@ import Link from 'next/link';
 import Cookies from 'js-cookie';
 
 //custom imports 
-import { IMAGE_PATHS } from '@/imagePaths';
+import { IMAGE_PATHS } from '@/utilites/imagePaths';
 import getShoppingCart from './components/getShoppingCar';
 import removeProduct from './components/removeProduct';
 import checkOut from './components/checkOut';
 
-import { CartItem, Cart } from '@/types';
+import { CartItem, Cart } from '@/utilites/types';
 
 export default function ShoppingCart() {
   const searchParams = useSearchParams();

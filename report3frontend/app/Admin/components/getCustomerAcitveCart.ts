@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 
 // Custom imports
-import { ACTIVE_CARTS }from '@/flaskEndpoints';
+import { ACTIVE_CARTS }from '@/utilites/flaskEndpoints';
   
 
 const getCustomerActiveCarts = async (e: FormEvent, setCustomerNames: (customer_names: string[]) => void) => {

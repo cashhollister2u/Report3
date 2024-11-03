@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useRouter } from 'next/navigation';
 
 // Custom imports
-import { REGISTER }from '../../flaskEndpoints';
+import { REGISTER }from '../../utilites/flaskEndpoints';
 
 interface FormData {
   name: string
