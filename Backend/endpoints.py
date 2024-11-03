@@ -58,6 +58,8 @@ def login():
         if customer_account[1] == email:
             if bcrypt.check_password_hash(customer_account[3], passwd): #check the hased passwd with the one provided by the customer
                 return jsonify(access_token="dummy token", customer_id=customer_account[0]), 200 # return customer_id and dummy token
+            else:
+                return jsonify({"message":"Invalid credentials"}), 401
     except:
         return jsonify({"message":"Invalid credentials"}), 401
 
