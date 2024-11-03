@@ -8,20 +8,7 @@ import Cookies from 'js-cookie';
 //custom imports 
 import { IMAGE_PATHS } from '@/imagePaths';
 import getProducts from './components/getProducts';
-
-
-interface Product {
-    product_id: string,
-    name: string,
-    image_path: string,
-    price: number,
-    rating:number
-}
-
-interface ProductPageProps {
-  customer_id: string;
-  product_id: string;
-}
+import { Product } from '@/types';
 
 export default function HomePage() {
   const router = useRouter();
@@ -35,11 +22,8 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    console.log('Customer ID from URL:', customer_id);
     if (products?.length === 0) {
         getProducts(access_token).then((data) => {
-          console.log('Fetched data:', data); // Debugging step
-
           if (Array.isArray(data)) {
             data.forEach((product) => {
                 const prod_id = parseInt(product.product_id, 10);
@@ -48,8 +32,6 @@ export default function HomePage() {
             setProducts(data);
           } else {
             console.error('Expected an array but received:', data);
-            // Optionally handle non-array data or route user away
-            // router.push(`/`);
           }
         }).catch(error => {
           console.error('Error fetching products:', error);

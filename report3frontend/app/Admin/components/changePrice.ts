@@ -4,7 +4,7 @@ import { FormEvent } from "react";
 import { UPDATE_PRICE }from '@/flaskEndpoints';
   
 
-const changePrice = async (e: FormEvent, product_id:string, new_price:number, setPriceMessage: (message: string) => void) => {
+const changePrice = async (e: FormEvent, product_id:string, new_price:string, setPriceMessage: (message: string) => void) => {
   e.preventDefault()
     try {
       const response = await fetch(UPDATE_PRICE, {

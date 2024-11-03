@@ -36,8 +36,8 @@ def getShoppingCart(customer_id):
     try:
         with connection.cursor(buffered=True) as cursor:
             query1 = (
-                "SELECT customer_id, product_id, num_of_prod_in_cart "
-                "FROM customer_account NATURAL JOIN shopping_cart "
+                "SELECT customer_id, S.product_id, num_of_prod_in_cart, price "
+                "FROM customer_account NATURAL JOIN shopping_cart AS S JOIN product AS P ON S.product_id = P.product_id "
                 "WHERE customer_id = %s"
             )
             cursor.execute(query1, (customer_id,))
@@ -47,12 +47,13 @@ def getShoppingCart(customer_id):
                 print(f"No data found for customer_id {customer_id}.")
             else:
                 customer_cart = []
-                for (customer_id, product_id, num_of_prod_in_cart) in results:
-                    print(f"Customer ID: {customer_id}, Product ID: {product_id}, Number of Products: {num_of_prod_in_cart}")
+                for (customer_id, product_id, num_of_prod_in_cart, price) in results:
+                    #print(f"Customer ID: {customer_id}, Product ID: {product_id}, Number of Products: {num_of_prod_in_cart}, Price: {price}")
                     cart_item = {
                         "customer_id":customer_id,
                         "product_id":product_id,
-                        "num_of_prod_in_cart": num_of_prod_in_cart
+                        "num_of_prod_in_cart": num_of_prod_in_cart,
+                        "price":price
                     }
                     customer_cart.append(cart_item)
                 return customer_cart
@@ -268,7 +269,6 @@ def getAllProducts():
                     "rating": rating
                 }
                 products.append(product)
-                print(f"Product ID: {product_id}, Name: {name}, Seller ID: {seller_id}, Price: {price}, Rating:{rating}")
             return products
 
     except mysql.connector.Error as err:
@@ -305,7 +305,6 @@ def getProductDetails(product_id):
                     "price": price,
                     "rating": rating
                 }
-                print(f"Product details fetched: {product}")
                 return product
             else:
                 print("No product found.")
@@ -443,7 +442,6 @@ def updateProductPrice(product_id, new_price):
             )
             cursor.execute(query, (new_price, product_id))
             connection.commit()
-            print("\nQuery 2: Product price updated successfully.")
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
@@ -474,7 +472,6 @@ def getUsersWithUniqueProducts():
             cursor.execute(query)
             result = cursor.fetchall()
             
-            print("\nFetching: Users w/ more than one unique item in their cart")
             return result
     except mysql.connector.Error as err:
         print(f"Error: {err}")

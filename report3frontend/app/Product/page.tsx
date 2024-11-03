@@ -7,21 +7,7 @@ import Cookies from 'js-cookie';
 // custom imports 
 import getProductDetails from './components/getProductDetails';
 import addToCart from './components/addToCart';
-
-
-
-interface ProductPageProps {
-  customer_id: string;
-  product_id: string;
-}
-
-interface Product {
-  product_id: string,
-  name: string,
-  image_path: string,
-  price: number,
-  rating: number
-}
+import { Product } from '@/types';
 
 
 export default function ProductPage()  {
@@ -44,7 +30,7 @@ export default function ProductPage()  {
         if (data?.product) {
           setProduct(data.product)
         } else {
-          //router.push(`/`)
+          console.log("Error: retrieving product details")
         }
       })
     }

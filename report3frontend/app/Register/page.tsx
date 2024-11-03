@@ -14,7 +14,7 @@ interface FormData {
 }
 
 export default function Register() {
-
+  const [erroMsg, setErrorMsg] = useState<string>("")
   const router = useRouter()
   const [formData, setFormData] = useState<FormData> ({
     name: '',
@@ -29,7 +29,7 @@ export default function Register() {
     setFormData({...formData, [name] : value })
   }
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault()
     // ensure the password and confirmPasswords match 
     if (formData.passwd !== formData.confirmPassword) {
@@ -48,7 +48,8 @@ export default function Register() {
       if (response.ok) {
         router.push(`/`)
       } else {
-        console.log('failed to login: ', response.status)
+        console.log('failed to Register: ', response.status)
+        setErrorMsg("Error: Customer Account exists login")
     }
     } catch (error) {
       console.log('Error: ', error)
@@ -59,7 +60,7 @@ export default function Register() {
     <main className="flex min-h-screen items-center justify-center bg-white">
     <div className="flex items-center justify-center flex-col z-10 w-full font-mono text-sm">
       <img src="amazon_logo.png" alt="Amazon Logo"/>
-      <form className="flex flex-col w-1/5 mt-8 space-y-2 border border-black rounded p-6" onSubmit={handleSubmit}>
+      <form className="flex flex-col w-1/5 mt-8 space-y-2 border border-black rounded p-6" onSubmit={handleRegister}>
         <h2 className="text-lg py-2 text-black font-bold">Create Account  </h2>
         <label className="text-black">Your name </label>
         <input
@@ -102,7 +103,10 @@ export default function Register() {
         <input className="bg-yellow-500 rounded px-4 mt-2 w-full p-1 text-white hover:bg-yellow-700" type="submit" value="Continue" />
         </div>
       </form>
-      <a className="flex items-center justify-center mt-4 text-black hover:text-gray-700 border border-black shadow-lg rounded p-1 w-1/5" href="/">Already have an account? Sign in</a>
+      <a className="flex items-center justify-center mt-4 text-black hover:text-gray-700 border border-black shadow-lg rounded p-1 w-1/5" href="/">
+        Already have an account? Sign in
+      </a>
+      <p className="mt-6 text-red-500 font-bold">{erroMsg}</p>
     </div>
     </main>
   );

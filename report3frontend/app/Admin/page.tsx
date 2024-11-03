@@ -8,9 +8,8 @@ import getUniqueProducts from "./components/getUniqueProducts";
 
 interface FormData {
     product_id: string
-    new_price:number | undefined;
+    new_price:string;
 }
-
 
 export default function Register() {
     const router = useRouter();
@@ -18,7 +17,7 @@ export default function Register() {
     const [customerIds, setCustomerIds] = useState<string[]> ([]) 
     const [formData, setFormData] = useState<FormData> ({
         product_id: '',
-        new_price: undefined,
+        new_price: '',
     })
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

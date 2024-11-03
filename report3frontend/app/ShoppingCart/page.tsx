@@ -11,24 +11,7 @@ import getShoppingCart from './components/getShoppingCar';
 import removeProduct from './components/removeProduct';
 import checkOut from './components/checkOut';
 
-interface ProductPageProps {
-  customer_id: string;
-  product_id: string;
-}
-
-interface CartItem{
-  customer_id: string,
-  product_id: string,
-  num_of_prod_in_cart: number,
-  price: number,
-  image_path: string,
-  name: string
-}
-
-interface Cart {
-  shopping_cart: CartItem[];
-  total: number;
-}
+import { CartItem, Cart } from '@/types';
 
 export default function ShoppingCart() {
   const searchParams = useSearchParams();
@@ -47,7 +30,7 @@ export default function ShoppingCart() {
       getShoppingCart(access_token, customer_id).then((data:Cart) => {
         console.log('Fetched data:', data); // Debugging step
         const cart_items:CartItem[] = data.shopping_cart
-        cart_items.forEach((product:CartItem) => {
+        cart_items?.forEach((product:CartItem) => {
             const prod_id = parseInt(product.product_id, 10);
             product.image_path = IMAGE_PATHS[prod_id - 1];
         });
@@ -60,7 +43,7 @@ export default function ShoppingCart() {
   }
   }, []) 
 
-
+console.log(products)
   return (
     <main className="flex bg-white min-h-screen ">
         <div className='flex flex-col border border-black items-left justify-left flex-col z-10 w-40 bg-gray-600 font-mono text-sm'>

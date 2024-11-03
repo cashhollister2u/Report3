@@ -18,6 +18,7 @@ interface LoginData {
 
 export default function Login() {
   const router = useRouter()
+  const [erroMsg, setErrorMsg] = useState<string>("")
   const [formData, setFormData] = useState<FormData> ({
     email:'',
     passwd:'',
@@ -28,7 +29,7 @@ export default function Login() {
     setFormData({...formData, [name] : value })
   }
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handlLogin = async (e: FormEvent) => {
     e.preventDefault()
 
     try {
@@ -45,6 +46,7 @@ export default function Login() {
         router.push(`/HomePage?customer_id=${data.customer_id}`)
       } else {
         console.log('failed to login: ', response.status)
+        setErrorMsg("Error: No Account with that email or password.")
     }
     } catch (error) {
       console.log('Error: ', error)
@@ -55,7 +57,7 @@ export default function Login() {
     <main className="flex bg-white min-h-screen items-center justify-center">
       <div className="flex items-center justify-center flex-col z-10 w-full font-mono text-sm">
         <img src="/amazon_logo.png" alt="Amazon Logo"/>
-        <form className="flex flex-col w-1/5 mt-8 space-y-2 p-6 border rounded border-black" onSubmit={handleSubmit}>
+        <form className="flex flex-col w-1/5 mt-8 space-y-2 p-6 border rounded border-black" onSubmit={handlLogin}>
           <h2 className="text-lg text-black font-bold">Sign-in </h2>
           <label className="text-black">email </label>
           <input
@@ -79,7 +81,10 @@ export default function Login() {
             <input className="bg-yellow-500 rounded px-4 text-white hover:bg-yellow-700" type="submit" value="Continue" />
           </div>
         </form>
-        <a className="flex items-center justify-center mt-4 text-black hover:text-gray-700 border border-black shadow-lg rounded p-1 w-1/5" href="/Register">Create your Amazon account</a>
+        <a className="flex items-center justify-center mt-4 text-black hover:text-gray-700 border border-black shadow-lg rounded p-1 w-1/5" href="/Register">
+          Create your Amazon account
+        </a>
+        <p className="mt-6 text-red-500 font-bold">{erroMsg}</p>
       </div>
     </main>
   );
