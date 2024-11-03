@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 
 # Custom imports
 from extensions import bcrypt
-from sql_commands import processCheckOut, decrimentProductCountFromCart, removeProductFromCart, getProductDetails, getAllProducts, getShoppingCart, getShoppingCartTotal, addExistingProductToCart, addNewProductToCart
+from sql_commands import createCustomerAccount, getCustomerBaseCount, getCustomerAccount, processCheckOut, decrimentProductCountFromCart, removeProductFromCart, getProductDetails, getAllProducts, getShoppingCart, getShoppingCartTotal, addExistingProductToCart, addNewProductToCart
 
 user_bp = Blueprint('user', __name__)
 
@@ -10,30 +10,25 @@ user_bp = Blueprint('user', __name__)
 # handle user registration
 @user_bp.route('/register', methods=['POST'])
 def register():
-    global demo_users #REPLACE
-
     data = request.get_json()
     # get the data passed 
     email = data['email']
     passwd = data['passwd']
     name = data['name']
-    address = data['name']
+    address = "12345 road lane" # hard coded no address functionality
     credit_card_num = data['credit_card_num']
 
-    # check if Customer Account exists in db already
-    #
-    #
-    ################################################
-
-    # REPLACE w/ above SQL query ########################
-    newUser = True # no Customer Account until proven false
-    for user in demo_users:
-        if user['email'] == email:
-            newUser = False
-    ######################################################
+    #sql query to retrieve the customer account based on email input 
+    customer_account = getCustomerAccount(email=email)
+    #sql query to retrieve count of total customer_accounts
+    customer_id = int(getCustomerBaseCount()) + 1
+    # front fill with '0's to conform to predefined structure
+    customer_id = str(customer_id).zfill(5)
+    print(customer_account)
+    print(customer_id)
 
     # return 400 if account exists 
-    if not newUser:
+    if customer_account:
         response = {
             'message': 'Email already registered.',
         }
@@ -42,30 +37,14 @@ def register():
         # Hash passwd
         password = passwd
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-
-        # add Customer Account to db########
-        #
-        #
-        ####################################
-
-        # REPLACE w/ above SQL query ########################
-        new_customer_accoount = {
-            "customer_id" : len(demo_users),
-            "email" : email,
-            "name" : name,
-            "passwd" : hashed_password,
-            "address" : address,
-            "credit_card_num" : credit_card_num
-        }
-        demo_users.append(new_customer_accoount) # sim add to db
-        print("new user" , demo_users)
-        ######################################################
-
-        # send confirmation message back to user 
+        print(hashed_password)
+        createCustomerAccount(customer_id=customer_id, email=email, name=name, passwd=hashed_password, address=address, credit_card_num=credit_card_num)
+    
         response = {
             'message': 'Customer Account Created',
         }
         return jsonify(response), 201
+
     
     
 # handle user login
@@ -78,20 +57,17 @@ def login():
     email = data['email']
     passwd = data['passwd']
 
-    # Try to retrieve customer account from db ####
-    #
-    #
-    ################################################
+    #sql query to retrieve the customer account based on email input 
+    customer_account = getCustomerAccount(email=email)
 
-    # REPLACE w/ above SQL query ########################
-    print(demo_users)
-    for user in demo_users:
-        if user['email'] == email:
-            if user and bcrypt.check_password_hash(user['passwd'], passwd):
-                return jsonify(access_token="dummy token", customer_id=user['customer_id']), 200
+    print(customer_account)
+    
+    # check provided email w/ the email in db
+    if customer_account[1] == email:
+        if bcrypt.check_password_hash(customer_account[3], passwd): #check the hased passwd with the one provided by the customer
+            return jsonify(access_token="dummy token", customer_id=customer_account[0]), 200 # return customer_id and dummy token
     
     return jsonify({"message":"Invalid credentials"}), 401
-    ######################################################
 
 
 # handle retrieving Home Page products

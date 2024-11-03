@@ -318,4 +318,165 @@ def getProductDetails(product_id):
     finally:
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
-    
+
+# Query 11 get customer account 
+def getCustomerAccount(email):
+    connection = get_connection_from_pool()
+    if connection is None:
+        print("Failed to get a connection from the pool.")
+        return None
+
+    try:
+        with connection.cursor(buffered=True) as cursor:
+            query = (
+                "SELECT * "
+                "FROM customer_account "
+                "WHERE email = %s"
+            )
+            cursor.execute(query, (email,))
+            result = cursor.fetchone()
+
+            # return the customer account associated w/ email or none
+            return result
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+    finally:
+        connection.close()  # Return the connection to the pool
+        print("Connection returned to pool.")
+
+# Query 12 get count of rows in customer_account table
+def getCustomerBaseCount():
+    connection = get_connection_from_pool()
+    if connection is None:
+        print("Failed to get a connection from the pool.")
+        return None
+
+    try:
+        with connection.cursor(buffered=True) as cursor:
+            query = (
+                "select count(*) from customer_account "
+            )
+            cursor.execute(query)
+            result = cursor.fetchone()
+
+            # return the customer account associated w/ email or none
+            return result[0]
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+    finally:
+        connection.close()  # Return the connection to the pool
+        print("Connection returned to pool.")
+
+
+# Query 13 create customer account
+def createCustomerAccount(customer_id, email, name, passwd, address, credit_card_num):
+    connection = get_connection_from_pool()
+    if connection is None:
+        print("Failed to get a connection from the pool.")
+        return None
+
+    try:
+        with connection.cursor(buffered=True) as cursor:
+            query = (
+                "INSERT INTO customer_account VALUES"
+                "(%s,%s,%s,%s,%s,%s)"
+            )
+            cursor.execute(query, (customer_id, email, name, passwd, address, credit_card_num,))
+            connection.commit()
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+    finally:
+        connection.close()  # Return the connection to the pool
+        print("Connection returned to pool.")
+
+
+##### misc admin functionality tools #####
+
+# Query 14 gets all users w/ an active shopping cart 
+def getUsersWithCart(customer_id):
+    connection = get_connection_from_pool()
+    if connection is None:
+        print("Failed to get a connection from the pool.")
+        return None
+
+    try:
+        with connection.cursor(buffered=True) as cursor:
+            query = (
+                "SELECT name "
+                "FROM customer_account "
+                f"WHERE {customer_id} IN ( "
+                f"SELECT {customer_id} "
+                "FROM shopping_cart) "
+            )
+            cursor.execute(query)
+            result = cursor.fetchall()
+            print("\nQFetching: customers w/ active carts")
+            return result
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+    finally:
+        connection.close()  # Return the connection to the pool
+        print("Connection returned to pool.")
+
+# Query 14 updates the price of a specific product 
+def updateProductPrice(product_id, new_price):
+    connection = get_connection_from_pool()
+    if connection is None:
+        print("Failed to get a connection from the pool.")
+        return None
+
+    try:
+        with connection.cursor(buffered=True) as cursor:
+            query = (
+                "UPDATE product SET price = %s WHERE product_id = %s"
+            )
+            cursor.execute(query, (new_price, product_id))
+            connection.commit()
+            print("\nQuery 2: Product price updated successfully.")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+    finally:
+        connection.close()  # Return the connection to the pool
+        print("Connection returned to pool.")
+
+# displays all the customer_id(s) from the customer_account table that have more than one different item in their shopping cart
+def getUsersWithUniqueProducts(customer_id, product_id):
+    connection = get_connection_from_pool()
+    if connection is None:
+        print("Failed to get a connection from the pool.")
+        return None
+
+    try:
+        with connection.cursor(buffered=True) as cursor:
+            query = (
+                "SELECT S.customer_id "
+                "FROM shopping_cart AS S "
+                "WHERE S.customer_id = C.customer_id "
+                "GROUP BY S.customer_id "
+                "HAVING COUNT(product_id) > 1) "
+            )
+            cursor.execute(query)
+            result = cursor.fetchall()
+            
+            print("\nFetching: Users w/ more than one unique item in their cart")
+            return result
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+    finally:
+        connection.close()  # Return the connection to the pool
+        print("Connection returned to pool.")

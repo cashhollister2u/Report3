@@ -42,7 +42,7 @@ export default function Login() {
       if (response.ok) {
         const data: LoginData = await response.json()
         Cookies.set('access_token', data.access_token, {expires:1}) //secure:true when in prod
-        router.push(`/HomePage/${data.customer_id}`)
+        router.push(`/HomePage?customer_id=${data.customer_id}`)
       } else {
         console.log('failed to login: ', response.status)
     }

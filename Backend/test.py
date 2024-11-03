@@ -41,25 +41,36 @@ try:
     print("\nQuery 3 Results:")
     for (customer_id, total_cost) in cursor:
         print(f"Customer ID: {customer_id}, Total Cost: {total_cost}")
-    # Query 4: Select product IDs where the seller ID is below a certain value
+    # Query 4: Select custommer names that already have products in their cart
     query4 = (
-        "SELECT P.product_id FROM product AS P WHERE P.seller_id IN ("
-        "SELECT S.seller_id FROM seller_account AS S WHERE S.seller_id < %s)"
+        "SELECT name "
+        "FROM customer_account "
+        "WHERE customer_id IN ( "
+        "SELECT customer_id "
+        "FROM shopping_cart); "
     )
-    max_seller_id = 4
-    cursor.execute(query4, (max_seller_id,))
+    cursor.execute(query4)
     print("\nQuery 4 Results:")
-    for (product_id,) in cursor:
-        print(f"Product ID: {product_id}")
-    # Query 5: Find seller IDs where the seller has no listed products
+    print("Customers with Items in their shopping cart")
+    for (name,) in cursor:
+        print(f"Customer Name: {name}")
+    # Query 5: Find customer names that have more than one different products in their shoppint cart 
     query5 = (
-        "SELECT S.seller_id FROM seller_account AS S WHERE NOT EXISTS ("
-        "SELECT P.seller_id FROM product AS P WHERE S.seller_id = P.seller_id)"
-    )
+                "SELECT C.customer_id "
+                "FROM customer_account AS C "
+                "WHERE EXISTS( "
+                "SELECT S.customer_id "
+                "FROM shopping_cart AS S "
+                "WHERE S.customer_id = C.customer_id "
+                "GROUP BY S.customer_id "
+                "HAVING COUNT(product_id) > 1) "
+            )
     cursor.execute(query5)
     print("\nQuery 5 Results:")
-    for (seller_id,) in cursor:
-        print(f"Seller ID with no products: {seller_id}")
+    result = cursor.fetchall()
+    print(f"Customers with more than one different products in their shoppint cart: ")
+    print(result)
+    
 except mysql.connector.Error as err:
     print(f"Error: {err}")
 finally:
