@@ -3,86 +3,11 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 # Custom imports
-from extensions import db, bcrypt
+from extensions import bcrypt
+from sql_commands import processCheckOut, decrimentProductCountFromCart, removeProductFromCart, getProductDetails, getAllProducts, getShoppingCart, getShoppingCartTotal, addExistingProductToCart, addNewProductToCart
 
 user_bp = Blueprint('user', __name__)
 
-
-demo_products = [
-    {
-        "product_id": '1',
-        "name": 'Amazon Brand - Happy Belly Purified Water, Plastic Bottles, 16.91 fl oz (Pack of 24)',
-        "image_path": '/water_case.jpg',
-        "price": 12.99,
-        "rating": 3
-      },
-    {
-        "product_id": '2',
-        "name": 'JOLLY RANCHER Assorted Fruit Flavored Hard Candy Bulk Bag, 5 lb',
-        "image_path": '/candy.jpg',
-        "price": 9.99,
-        "rating": 5
-    },
-    {
-        "product_id": '3',
-        "name": 'Starbucks Ground Coffee, Dark Roast Coffee, Espresso Roast, 100% Arabica, 1 bag (28 oz)',
-        "image_path": '/coffee.jpg',
-        "price": 14.99,
-        "rating": 2
-    },
-    {
-        "product_id": '4',
-        "name": "MRS. MEYER'S CLEAN DAY Liquid Hand Soap Variety, 12.5 Ounce (Variety Pack 6 ct)",
-        "image_path": '/handsoap.jpg',
-        "price": 21.99,
-        "rating": 4
-    },
-    {
-        "product_id": '5',
-        "name": 'SHARPIE Permanent Markers, Quick Drying And Fade Resistant Fine Tip Marker Set For Wood, Plastic Paper, Metal, And More',
-        "image_path": '/sharpie.jpg',
-        "price": 15.99,
-        "rating": 3
-    },
-    {
-        "product_id": '6',
-        "name": 'Oral-B Pro Health CrossAction All in One Soft Toothbrushes, Deep Plaque Fighter',
-        "image_path": '/toothbrush.jpg',
-        "price": 16.99,
-        "rating": 5
-    }
-]
-
-demo_users = [
- 
-]
-'''
-    {
-        "customer_id" : "1",
-        "email" : "user1@gmail.com",
-        "name" : "user1",
-        "passwd" : "test12345",
-        "address" : "123 St lane",
-        "credit_card_num" : 1234567890123456
-    },
-'''
-demo_user1_cart = [
-    {
-        "customer_id" : "1",
-        "product_id" : "4",
-        "num_of_prod_in_cart" : 3
-    },
-    {
-        "customer_id" : "1",
-        "product_id" : "3",
-        "num_of_prod_in_cart" : 3
-    },
-    {
-        "customer_id" : "1",
-        "product_id" : "2",
-        "num_of_prod_in_cart" : 3
-    },
-]
 
 # handle user registration
 @user_bp.route('/register', methods=['POST'])
@@ -173,116 +98,76 @@ def login():
 # handle retrieving Home Page products
 @user_bp.route('/products', methods=['POST'])
 def products():
-    global demo_products #REPLACE
-
-    # Retrieve demo products from db ####
-    #
-    # demo_products = 
-    ################################################
-    
-    return jsonify({"products":demo_products}), 201
+    # sql query to retrieve all products on website 
+    products = getAllProducts()
+    print(products)
+    return jsonify({"products":products}), 201
 
 # handle retrieving product info
 @user_bp.route('/product_info', methods=['POST'])
 def productInfo():
-    global demo_products #REPLACE
-    
     data = request.get_json()
     product_id = data['product_id']
     # Retrieve demo product info from db ####
-    #
-    # demo_product = 
-    ################################################
+    product_details = getProductDetails(product_id=product_id)
 
     # REPLACE w/ actual product details 
-    return jsonify({"product":demo_products[product_id - 1]}), 201
+    return jsonify({"product":product_details}), 201
 
 # handle retrieving Customer Account Shopping Cart
 @user_bp.route('/cart', methods=['POST'])
 def cart():
-    global demo_user1_cart # REPLACE
-    account_specific_shopping_cart = demo_user1_cart # REPLACE
-
-    # Retrieve Customer Account Shopping Cart ####
-    #
-    # demo_user1_cart = 
-    ################################################
+    data = request.get_json()
+    # call sql database for user shopping cart
+    account_specific_shopping_cart = getShoppingCart(customer_id=data['customer_id'])
 
     # Calculate Shopping Cart Total ####
-    #
-    # demo_user1_cart = 
-    ################################################
-
-    # REPLACE w/ actual sql query above
-    total = 0
-    for product in account_specific_shopping_cart:
-        tmp_product_id = int(product['product_id'])
-        product_details = demo_products[tmp_product_id - 1]
-        product['name'] = product_details['name']
-        product['price'] = product_details['price']
-        product['image_path'] = ""
-        total += float(product_details['price']) * int(product['num_of_prod_in_cart'])
+    total = getShoppingCartTotal(customer_id=data['customer_id'])
         
     return jsonify({"shopping_cart": account_specific_shopping_cart, "total": total}), 201
 
 # add item to Shopping Cart
 @user_bp.route('/add_to_cart', methods=['POST'])
 def addTOCart():
-    global demo_user1_cart # REPLACE
-    account_specific_shopping_cart = demo_user1_cart # REPLACE
-
     data = request.get_json()
     customer_id = data['customer_id']
     product_id = data['product_id']
+    # call sql database for user shopping cart
+    account_specific_shopping_cart = getShoppingCart(customer_id=customer_id)
 
-    added_product = {
-            "customer_id" : customer_id,
-            "product_id" : product_id,
-            "num_of_prod_in_cart" : 1
-    }
-
-    # Add to Customer Account Shopping Cart ####
-    #
-    # demo_user1_cart = 
-    ################################################
-
-    # REPLACE w/ above SQL query ########################
-    product_found = False
-    account_specific_shopping_cart = demo_user1_cart
-    for product in account_specific_shopping_cart:
-        if product['product_id'] == product_id:
-            product['num_of_prod_in_cart'] += 1
-            product_found = True
+    #check if product in cart
+    product_in_cart = False
+    for curr_product in account_specific_shopping_cart:
+        if curr_product['product_id'] == product_id:
+            product_in_cart = True
+            #Update the sql db for incremented product in cart
+            addExistingProductToCart(customer_id=customer_id, product_id=product_id)
             break
-
-    if not product_found:
-        account_specific_shopping_cart.append(added_product)
-
+    
+    if not product_in_cart:
+        addNewProductToCart(customer_id=customer_id,product_id=product_id)
 
     return jsonify({"message":"Product Added"}), 200
 
 # remove item from Shopping Cart
 @user_bp.route('/remove_from_cart', methods=['POST'])
 def removeFromCart():
-    global demo_user1_cart # REPLACE
-    account_specific_shopping_cart = demo_user1_cart # REPLACE
-
     data = request.get_json()
     customer_id = data['customer_id']
     product_id = data['product_id']
+    account_specific_shopping_cart = getShoppingCart(customer_id=data['customer_id'])
 
-
-    # Add to Customer Account Shopping Cart ####
-    #
-    # account_specific_shopping_cart = 
-    ################################################
-
-    # REPLACE w/ above SQL query ########################
+    # sql query to remove individual items from cart
     for product in account_specific_shopping_cart:
+        print('1')
         if int(product['product_id']) == product_id:
-            product['num_of_prod_in_cart'] -= 1
-            if product['num_of_prod_in_cart'] <= 0:
-                account_specific_shopping_cart.remove(product)
+            print('2')
+            if product['num_of_prod_in_cart'] > 1:
+                print('3')
+                decrimentProductCountFromCart(customer_id=customer_id,product_id=product_id)
+            else:
+                print('4')
+                removeProductFromCart(customer_id=customer_id,product_id=product_id)
                 break
 
 
@@ -291,16 +176,14 @@ def removeFromCart():
 # handle Customer Account Shopping Cart check out
 @user_bp.route('/check_out', methods=['POST'])
 def checkOut():
-    global demo_user1_cart # REPLACE
-    account_specific_shopping_cart = demo_user1_cart # REPLACE
+    data = request.get_json()
+    customer_id = data['customer_id']
+    account_specific_shopping_cart = getShoppingCart(customer_id=customer_id)
     
-    # Clear Customer Account Shopping Cart ####
-    #
-    # account_specific_shopping_cart = 
-    ################################################
+    #sql query to simulate customer check out
+    processCheckOut(customer_id=customer_id)
+
     if not account_specific_shopping_cart:
         return jsonify({"message": "Cart is already empty or undefined"}), 400
     
-    account_specific_shopping_cart.clear()
-
     return jsonify({"message":"Customer Checked Out"}), 200

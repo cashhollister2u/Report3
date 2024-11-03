@@ -15,7 +15,7 @@ interface CartItem{
     total: number;
   }
 
-const getShoppingCart = async (access_token:string, customer_id: string, product_id: number): Promise<Cart> => {
+const getShoppingCart = async (access_token:string, customer_id: string): Promise<any> => {
     const nullCartItem: CartItem[] = 
         [
             {
@@ -36,7 +36,7 @@ const getShoppingCart = async (access_token:string, customer_id: string, product
           'Content-Type' : 'application/json',
           'Authorization' : `Bearer ${access_token}`
         },
-        body: JSON.stringify({ "product_id": product_id, "customer_id":customer_id })
+        body: JSON.stringify({ "customer_id":customer_id })
       })
       if (response.ok) {
         const data = await response.json()

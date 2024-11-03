@@ -1,6 +1,7 @@
 
 //Custom Imports
 import { PRODUCT_DETAILS } from '@/flaskEndpoints';
+import { IMAGE_PATHS } from '@/imagePaths';
 
 interface Product {
   product_id: string,
@@ -15,7 +16,7 @@ interface Response {
 }
 
 
-const getProductDetails = async (access_token:string, product_id: number) => {
+const getProductDetails = async (access_token:string, product_id: string) => {
 
     try {
       const response = await fetch(PRODUCT_DETAILS, {
@@ -29,6 +30,7 @@ const getProductDetails = async (access_token:string, product_id: number) => {
       if (response.ok) {
         const data: Response = await response.json()
         console.log(data)
+        data.product.image_path = IMAGE_PATHS[parseInt(data.product.product_id, 10) - 1]
         return data;
         
       } else {

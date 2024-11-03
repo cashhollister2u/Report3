@@ -4,7 +4,7 @@ import { FormEvent } from "react";
 import { CHECK_OUT } from '@/flaskEndpoints';
   
 
-const checkOut = async (e: FormEvent, customer_id:string, product_id:number, access_token:string) => {
+const checkOut = async (e: FormEvent, customer_id:string, access_token:string) => {
   e.preventDefault()
     try {
       const response = await fetch(CHECK_OUT, {
@@ -13,7 +13,7 @@ const checkOut = async (e: FormEvent, customer_id:string, product_id:number, acc
           'Content-Type' : 'application/json',
           'Authorization' : `Bearer ${access_token}`
         },
-        body : JSON.stringify({"customer_id":customer_id, "product_id":product_id})
+        body : JSON.stringify({"customer_id":customer_id})
       })
       if (response.ok) {
         // add data type

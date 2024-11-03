@@ -1,19 +1,19 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 
 // custom imports 
-import getProductDetails from '../../components/getProductDetails';
-import addToCart from '../../components/addToCart';
+import getProductDetails from './components/getProductDetails';
+import addToCart from './components/addToCart';
 
-interface updatePageProps {
-  params: {
-    customer_id: string,
-    product_id: string
-  }
+
+
+interface ProductPageProps {
+  customer_id: string;
+  product_id: string;
 }
-
 
 interface Product {
   product_id: string,
@@ -24,10 +24,12 @@ interface Product {
 }
 
 
-export default function ProductPage({ params }: updatePageProps) {
-  const { customer_id, product_id } = params;
+export default function ProductPage()  {
   const [product, setProduct] = useState<Product | undefined>(undefined) 
   const router = useRouter()
+  const searchParams = useSearchParams();
+  const customer_id: string = searchParams.get("customer_id") || "";
+  const product_id = searchParams.get("product_id") || "";
   const access_token : string = Cookies.get('access_token') ?? ""
 
 
@@ -38,9 +40,8 @@ export default function ProductPage({ params }: updatePageProps) {
 
   useEffect(() => {
     if (product === undefined) {
-      const parsed_product_id = parseInt(product_id, 10);
-      getProductDetails(access_token, parsed_product_id).then((data) => {
-        if (data) {
+      getProductDetails(access_token, product_id).then((data) => {
+        if (data?.product) {
           setProduct(data.product)
         } else {
           //router.push(`/`)
@@ -49,53 +50,6 @@ export default function ProductPage({ params }: updatePageProps) {
     }
   }, [product_id]) 
 
-  
-/*
-  const demoProducts: Product[] = [
-    {
-        product_id: '1',
-        name: 'Amazon Brand - Happy Belly Purified Water, Plastic Bottles, 16.91 fl oz (Pack of 24)',
-        image_path: '/water_case.jpg',
-        price: 12.99,
-        rating: 3
-      },
-    {
-        product_id: '2',
-        name: 'JOLLY RANCHER Assorted Fruit Flavored Hard Candy Bulk Bag, 5 lb',
-        image_path: '/candy.jpg',
-        price: 9.99,
-        rating: 5
-    },
-    {
-        product_id: '3',
-        name: 'Starbucks Ground Coffee, Dark Roast Coffee, Espresso Roast, 100% Arabica, 1 bag (28 oz)',
-        image_path: '/coffee.jpg',
-        price: 14.99,
-        rating: 2
-    },
-    {
-        product_id: '4',
-        name: "MRS. MEYER'S CLEAN DAY Liquid Hand Soap Variety, 12.5 Ounce (Variety Pack 6 ct)",
-        image_path: '/handsoap.jpg',
-        price: 21.99,
-        rating: 4
-    },
-    {
-        product_id: '5',
-        name: 'SHARPIE Permanent Markers, Quick Drying And Fade Resistant Fine Tip Marker Set For Wood, Plastic Paper, Metal, And More',
-        image_path: '/sharpie.jpg',
-        price: 15.99,
-        rating: 3
-    },
-    {
-        product_id: '6',
-        name: 'Oral-B Pro Health CrossAction All in One Soft Toothbrushes, Deep Plaque Fighter',
-        image_path: '/toothbrush.jpg',
-        price: 16.99,
-        rating: 5
-    },
-  ];
-  */
 
   return (
     <main className="flex min-h-screen bg-gray-500 items-center justify-center">
@@ -107,11 +61,11 @@ export default function ProductPage({ params }: updatePageProps) {
                     >Log Out
             </button>
             <a className="flex bg-yellow-500 items-center border-2 border-gray-500 justify-center h-32 px-4 text-white hover:bg-yellow-700" 
-                href={`/HomePage/${customer_id}`}>
+                href={`/HomePage?customer_id=${customer_id}`}>
                 Home Page
             </a>
             <a className="flex bg-yellow-500 items-center border-2 border-gray-500 justify-center h-32 px-4 text-white hover:bg-yellow-700" 
-                href={`/ShoppingCart/${customer_id}`}>
+                href={`/ShoppingCart?customer_id=${customer_id}`}>
                 Shopping Cart
             </a>
       </div>

@@ -15,7 +15,7 @@ try:
         "FROM customer_account NATURAL JOIN shopping_cart "
         "WHERE customer_id = %s"
     )
-    customer_id = '00003'
+    customer_id = '00001'
     cursor.execute(query1, (customer_id,))
     results = cursor.fetchall()
     print("Query 1 Results:")

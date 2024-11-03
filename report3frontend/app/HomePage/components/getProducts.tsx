@@ -14,6 +14,7 @@ interface Product {
 const getProducts = async (access_token:string): Promise<Product[]> => {
 
     try {
+      console.log('ran')
       const response = await fetch(AMAZON_PRODUCTS, {
         method : 'POST',
         headers : {

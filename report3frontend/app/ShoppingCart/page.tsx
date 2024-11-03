@@ -1,20 +1,19 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 
 //custom imports 
 import { IMAGE_PATHS } from '@/imagePaths';
-import getShoppingCart from '../components/getShoppingCar';
-import removeProduct from '../components/removeProduct';
-import checkOut from '../components/checkOut';
+import getShoppingCart from './components/getShoppingCar';
+import removeProduct from './components/removeProduct';
+import checkOut from './components/checkOut';
 
-interface updatePageProps {
-  params: {
-    customer_id: string,
-    product_id: string 
-  }
+interface ProductPageProps {
+  customer_id: string;
+  product_id: string;
 }
 
 interface CartItem{
@@ -31,8 +30,9 @@ interface Cart {
   total: number;
 }
 
-export default function ShoppingCart({ params }: updatePageProps) {
-  const { customer_id, product_id } = params
+export default function ShoppingCart() {
+  const searchParams = useSearchParams();
+  const customer_id = searchParams.get("customer_id") || "";
   const [products, setProducts] = useState<CartItem[] | undefined>([]) 
   const [total, setTotal] = useState<number>(0) 
   const router = useRouter()
@@ -44,8 +44,7 @@ export default function ShoppingCart({ params }: updatePageProps) {
 
   useEffect(() => {
     if (products?.length === 0) {
-      const parsed_product_id = parseInt(product_id, 10);
-      getShoppingCart(access_token, customer_id, parsed_product_id).then((data:Cart) => {
+      getShoppingCart(access_token, customer_id).then((data:Cart) => {
         console.log('Fetched data:', data); // Debugging step
         const cart_items:CartItem[] = data.shopping_cart
         cart_items.forEach((product:CartItem) => {
@@ -61,19 +60,6 @@ export default function ShoppingCart({ params }: updatePageProps) {
   }
   }, []) 
 
-  // add on submit
-  /*
-  let image_paths = ["/water_bottle.png", "/amazon_logo.png"]
-  const demoProducts: Products[] = [
-    {
-      product_id: '1',
-      name: 'Water Bottle',
-      image_path: '/water_bottle.png',
-      price: 1.99,
-      quantity: 3
-    },
-  ];
-*/
 
   return (
     <main className="flex bg-white min-h-screen ">
@@ -85,11 +71,11 @@ export default function ShoppingCart({ params }: updatePageProps) {
                     >Log Out
             </button>
             <a className="flex bg-yellow-500 items-center border-2 border-gray-500 justify-center h-32 px-4 text-white hover:bg-yellow-700" 
-                href={`/HomePage/${customer_id}`}>
+                href={`/HomePage?customer_id=${customer_id}`}>
                 Home Page
             </a>
             <a className="flex bg-yellow-500 items-center border-2 border-gray-500 justify-center h-32 px-4 text-white hover:bg-yellow-700" 
-                href={`/ShoppingCart/${customer_id}`}>
+                href={`/ShoppingCart?customer_id=${customer_id}`}>
                 Shopping Cart
             </a>
         </div>
@@ -102,7 +88,7 @@ export default function ShoppingCart({ params }: updatePageProps) {
             <form className="mt-10 border-2 rounded items-center justify-center border-gray-500 text-black w-2/3 mt-10 overflow-auto" >
                 {products && products.map((product, index) => (
                 <div key={index} className='flex flex-row self-start border border-black w-full justify-between w-full p-6 space-y-2 z-50'>
-                    <Link href={`/Product/${customer_id}/${product.product_id}`} passHref>
+                    <Link href={`/Product?customer_id=${customer_id}&product_id=${product.product_id}`} passHref>
                         <img src={product.image_path} alt="product_image" className="cursor-pointer w-36 h-36" />
                     </Link>
                     <div className='flex flex-col w-60'>
@@ -128,7 +114,7 @@ export default function ShoppingCart({ params }: updatePageProps) {
                   className='bg-yellow-500 rounded px-4 py-1 text-white hover:bg-yellow-700 font-bold text-2xl border border-black'
                   onClick={(e) => {
                     e.preventDefault;
-                    checkOut(e, customer_id, parseInt(product_id, 10), access_token)
+                    checkOut(e, customer_id, access_token)
                   }}
                   >
                   Check Out
