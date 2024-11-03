@@ -1,5 +1,6 @@
 'use client';
 import { ChangeEvent,useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Custom imports
 import changePrice from "./components/changePrice";
@@ -12,6 +13,7 @@ interface FormData {
 
 
 export default function Register() {
+    const router = useRouter();
     const [priceMessage, setPriceMessage] = useState<string> ("")
     const [customerIds, setCustomerIds] = useState<string[]> ([]) 
     const [formData, setFormData] = useState<FormData> ({
@@ -24,6 +26,9 @@ export default function Register() {
         setFormData({...formData, [name] : value })
     }
 
+    const handleLogOutButtonClick = () => {
+        router.push(`/`);
+      };
   
 
   return (
@@ -56,6 +61,12 @@ export default function Register() {
             ))}
         </div>
         <div className="flex bg-white h-screen m-10 border-2 rounded border-black items-center justify-center flex-col z-10 w-1/2 font-mono text-sm">
+            <button className="bg-yellow-500 absolute top-0 right-0 m-4 rounded border-2 border-gray-500 h-24 px-4 text-white hover:bg-yellow-700" 
+                onClick={(e) => {
+                    e.preventDefault(); 
+                    handleLogOutButtonClick()}}
+                    >Log Out
+            </button>
             <form className="flex m-10 border border-black flex-col w-4/5 mt-8 space-y-2  rounded p-6" onSubmit={(e) => formData.new_price && changePrice(e, formData.product_id,formData.new_price, setPriceMessage)}>
                 <h2 className="text-lg py-2 text-black font-bold">Change Product Price  </h2>
                 <label className="text-black">Product ID </label>
