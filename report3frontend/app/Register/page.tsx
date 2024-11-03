@@ -36,7 +36,6 @@ export default function Register() {
       alert("Passwords do not match!");
       return;
     }
-    console.log(formData)
     try {
       const response = await fetch(REGISTER, {
         method : 'POST',

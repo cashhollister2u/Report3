@@ -67,7 +67,7 @@ def getShoppingCart(customer_id):
         print("Connection returned to pool.")
 
     
-# Query 3: Calculate total cost for each customer based on their cart contents     
+# Query 2: Calculate total shopping cart cost for each customer based on their cart contents     
 def getShoppingCartTotal(customer_id):
     # Create a cursor object to interact with the database
     connection = get_connection_from_pool()
@@ -102,7 +102,7 @@ def getShoppingCartTotal(customer_id):
         print("Connection returned to pool.")
 
 
-# query 6 increments products in the cart that already exist in the cart 
+# Query 3 increments products in the cart that already exist in the cart 
 def addExistingProductToCart(customer_id, product_id):
     # Create a cursor object to interact with the database
     connection = get_connection_from_pool()
@@ -131,7 +131,7 @@ def addExistingProductToCart(customer_id, product_id):
         print("Connection returned to pool.")
 
 
-# Query 7 add products to cart that don't currently exist in cart 
+# Query 4 add products to cart that don't currently exist in cart 
 def addNewProductToCart(customer_id, product_id):
     # Create a cursor object to interact with the database
     connection = get_connection_from_pool()
@@ -158,7 +158,7 @@ def addNewProductToCart(customer_id, product_id):
         print("Connection returned to pool.")
     
 
-# Query 8 remove products from cart
+# Query 5 remove products from cart
 def removeProductFromCart(customer_id, product_id):
     # Create a cursor object to interact with the database
     connection = get_connection_from_pool()
@@ -186,7 +186,7 @@ def removeProductFromCart(customer_id, product_id):
         print("Connection returned to pool.")
 
 
-# Query 9 deciment product count from cart
+# Query 6 deciment product count from cart
 def decrimentProductCountFromCart(customer_id, product_id):
     # Create a cursor object to interact with the database
     connection = get_connection_from_pool()
@@ -215,7 +215,7 @@ def decrimentProductCountFromCart(customer_id, product_id):
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
     
-
+# Query 7 clears shopping cart for particular user simulates check out
 def processCheckOut(customer_id):
     # Create a cursor object to interact with the database
     connection = get_connection_from_pool()
@@ -243,7 +243,7 @@ def processCheckOut(customer_id):
         print("Connection returned to pool.")
     
 
-# Query 10 get all products on the website
+# Query 8 get all products on the website
 def getAllProducts():
     # Create a cursor object to interact with the database
     connection = get_connection_from_pool()
@@ -260,6 +260,7 @@ def getAllProducts():
             cursor.execute(query8)
             results = cursor.fetchall()
             products = []
+            #seller id is included here but not used by application
             for (product_id, name, seller_id, price, rating) in results:
                 product = {
                     "product_id": product_id,
@@ -279,7 +280,7 @@ def getAllProducts():
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
     
-# Query 11 get product details
+# Query 9 get product details based on product_id
 def getProductDetails(product_id):
     connection = get_connection_from_pool()
     if connection is None:
@@ -318,7 +319,7 @@ def getProductDetails(product_id):
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
 
-# Query 11 get customer account 
+# Query 10 get customer account information
 def getCustomerAccount(email):
     connection = get_connection_from_pool()
     if connection is None:
@@ -346,7 +347,8 @@ def getCustomerAccount(email):
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
 
-# Query 12 get count of rows in customer_account table
+# Query 11 get count of rows in customer_account table
+# this is used to assign customer_id on registration
 def getCustomerBaseCount():
     connection = get_connection_from_pool()
     if connection is None:
@@ -361,7 +363,7 @@ def getCustomerBaseCount():
             cursor.execute(query)
             result = cursor.fetchone()
 
-            # return the customer account associated w/ email or none
+            # return count of rows or number of customer accounts
             return result[0]
 
     except mysql.connector.Error as err:
@@ -373,7 +375,7 @@ def getCustomerBaseCount():
         print("Connection returned to pool.")
 
 
-# Query 13 create customer account
+# Query 12 create customer account
 def createCustomerAccount(customer_id, email, name, passwd, address, credit_card_num):
     connection = get_connection_from_pool()
     if connection is None:
@@ -400,8 +402,8 @@ def createCustomerAccount(customer_id, email, name, passwd, address, credit_card
 
 ##### misc admin functionality tools #####
 
-# Query 14 gets all users w/ an active shopping cart 
-def getUsersWithCart(customer_id):
+# Query 13 gets all users w/ an active shopping cart 
+def getUsersWithCart():
     connection = get_connection_from_pool()
     if connection is None:
         print("Failed to get a connection from the pool.")
@@ -412,8 +414,8 @@ def getUsersWithCart(customer_id):
             query = (
                 "SELECT name "
                 "FROM customer_account "
-                f"WHERE {customer_id} IN ( "
-                f"SELECT {customer_id} "
+                "WHERE customer_id IN ( "
+                "SELECT customer_id "
                 "FROM shopping_cart) "
             )
             cursor.execute(query)
@@ -437,11 +439,21 @@ def updateProductPrice(product_id, new_price):
 
     try:
         with connection.cursor(buffered=True) as cursor:
-            query = (
-                "UPDATE product SET price = %s WHERE product_id = %s"
+            # implimented to give user feedback on if the product exists
+            sub_query = (
+                f"SELECT * FROM product WHERE product_id = {product_id}"
             )
-            cursor.execute(query, (new_price, product_id))
+            cursor.execute(sub_query)
+            result = cursor.fetchone()
+            print(result)
+            if not result:
+                return False
+            query = (
+                f"UPDATE product SET price = {new_price} WHERE product_id = {product_id}"
+            )
+            cursor.execute(query)
             connection.commit()
+            return True
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
@@ -450,7 +462,7 @@ def updateProductPrice(product_id, new_price):
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
 
-# displays all the customer_id(s) from the customer_account table that have more than one different item in their shopping cart
+# Query 15 displays all the customer_id(s) from the customer_account table that have more than one different item in their shopping cart
 def getUsersWithUniqueProducts():
     connection = get_connection_from_pool()
     if connection is None:

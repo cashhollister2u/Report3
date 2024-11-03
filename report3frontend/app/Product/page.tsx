@@ -19,7 +19,6 @@ export default function ProductPage()  {
   const access_token : string = Cookies.get('access_token') ?? ""
 
 
-
   const handleLogOutButtonClick = () => {
     router.push(`/`);
   };

@@ -2,14 +2,7 @@
 //Custom Imports
 import { PRODUCT_DETAILS } from '@/flaskEndpoints';
 import { IMAGE_PATHS } from '@/imagePaths';
-
-interface Product {
-  product_id: string,
-  name: string,
-  image_path: string,
-  price: number,
-  rating: number
-}
+import { Product } from '@/types';
 
 interface Response {
   product: Product

@@ -1,14 +1,7 @@
 
 //Custom Imports
 import { AMAZON_PRODUCTS } from '@/flaskEndpoints';
-
-interface Product {
-  product_id: string,
-  name: string,
-  image_path: string,
-  price: number,
-  rating: number
-}
+import { Product } from '@/types';
 
 
 const getProducts = async (access_token:string): Promise<Product[]> => {

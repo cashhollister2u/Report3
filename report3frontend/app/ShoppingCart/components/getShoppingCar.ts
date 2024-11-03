@@ -1,19 +1,6 @@
 //Custom Imports
 import { SHOPPING_CART } from '@/flaskEndpoints';
-
-interface CartItem{
-    customer_id: string,
-    product_id: string,
-    num_of_prod_in_cart: number,
-    price: number,
-    image_path: string,
-    name: string
-  }
-  
-  interface Cart {
-    shopping_cart: CartItem[];
-    total: number;
-  }
+import { Cart, CartItem } from '@/types';
 
 const getShoppingCart = async (access_token:string, customer_id: string): Promise<any> => {
     const nullCartItem: CartItem[] = 

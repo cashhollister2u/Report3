@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 
 # Custom imports
 from extensions import bcrypt
-from sql_commands import getUsersWithUniqueProducts, updateProductPrice, createCustomerAccount, getCustomerBaseCount, getCustomerAccount, processCheckOut, decrimentProductCountFromCart, removeProductFromCart, getProductDetails, getAllProducts, getShoppingCart, getShoppingCartTotal, addExistingProductToCart, addNewProductToCart
+from sql_commands import getUsersWithCart, getUsersWithUniqueProducts, updateProductPrice, createCustomerAccount, getCustomerBaseCount, getCustomerAccount, processCheckOut, decrimentProductCountFromCart, removeProductFromCart, getProductDetails, getAllProducts, getShoppingCart, getShoppingCartTotal, addExistingProductToCart, addNewProductToCart
 
 user_bp = Blueprint('user', __name__)
 
@@ -42,7 +42,6 @@ def register():
         }
         return jsonify(response), 201
 
-    
     
 # handle user login
 @user_bp.route('/login', methods=['POST'])
@@ -144,6 +143,7 @@ def removeFromCart():
 
     return jsonify({"message":"Product Removed"}), 200
 
+
 # handle Customer Account Shopping Cart check out
 @user_bp.route('/check_out', methods=['POST'])
 def checkOut():
@@ -169,15 +169,25 @@ def change_product_price():
     product_id = data['product_id']
     new_price = data['new_price']
 
-    updateProductPrice(product_id=product_id, new_price=new_price) #sql query to update the price of product
+    price_changed = updateProductPrice(product_id=product_id, new_price=new_price) #sql query to update the price of product
     
-    return jsonify({"message":f"Product ID: {product_id} New Price: {new_price}"}), 200
+    if not price_changed:
+        return jsonify({"message":f"ERROR: Product ID: {product_id} does NOT exist in DataBase"}), 200
+    else:
+        return jsonify({"message":f"Product ID: {product_id} New Price: {new_price}"}), 200
+
 
 # handle retrieving customer ids w/ different unique products in cart
 @user_bp.route('/unique_prod_cart', methods=['POST'])
 def unique_prod_in_cart():
-    customer_names = getUsersWithUniqueProducts() # sql query for above note 
+    customer_ids = getUsersWithUniqueProducts() # sql query for above note 
+    
+    return jsonify(customer_ids), 200
+
+# handle retrieving customer names w/ active shopping cart
+@user_bp.route('/active_carts', methods=['POST'])
+def activeShoppingCart():
+    customer_names = getUsersWithCart() # sql query for above note 
     
     return jsonify(customer_names), 200
-
 
