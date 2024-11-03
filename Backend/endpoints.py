@@ -51,10 +51,9 @@ def login():
     email = data['email']
     passwd = data['passwd']
 
-    #sql query to retrieve the customer account based on email input 
-    customer_account = getCustomerAccount(email=email)
-
     try:
+        #sql query to retrieve the customer account based on email input 
+        customer_account = getCustomerAccount(email=email)
         # check provided email w/ the email in db
         if customer_account[1] == email:
             if bcrypt.check_password_hash(customer_account[3], passwd): #check the hased passwd with the one provided by the customer
