@@ -279,7 +279,7 @@ def getAllProducts():
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
     
-# Query 10 get product details
+# Query 11 get product details
 def getProductDetails(product_id):
     connection = get_connection_from_pool()
     if connection is None:

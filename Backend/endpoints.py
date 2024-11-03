@@ -1,6 +1,4 @@
-from Auth import creds
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 # Custom imports
 from extensions import bcrypt
@@ -95,6 +93,7 @@ def login():
     return jsonify({"message":"Invalid credentials"}), 401
     ######################################################
 
+
 # handle retrieving Home Page products
 @user_bp.route('/products', methods=['POST'])
 def products():
@@ -102,6 +101,7 @@ def products():
     products = getAllProducts()
     print(products)
     return jsonify({"products":products}), 201
+
 
 # handle retrieving product info
 @user_bp.route('/product_info', methods=['POST'])
@@ -113,6 +113,7 @@ def productInfo():
 
     # REPLACE w/ actual product details 
     return jsonify({"product":product_details}), 201
+
 
 # handle retrieving Customer Account Shopping Cart
 @user_bp.route('/cart', methods=['POST'])
@@ -126,6 +127,7 @@ def cart():
         
     return jsonify({"shopping_cart": account_specific_shopping_cart, "total": total}), 201
 
+
 # add item to Shopping Cart
 @user_bp.route('/add_to_cart', methods=['POST'])
 def addTOCart():
@@ -134,20 +136,25 @@ def addTOCart():
     product_id = data['product_id']
     # call sql database for user shopping cart
     account_specific_shopping_cart = getShoppingCart(customer_id=customer_id)
+    try:
+        #check if product in cart
+        product_in_cart = False
+        for curr_product in account_specific_shopping_cart:
+            if curr_product['product_id'] == product_id:
+                product_in_cart = True
+                #Update the sql db for incremented product in cart
+                addExistingProductToCart(customer_id=customer_id, product_id=product_id)
+                break
+        
+        if not product_in_cart:
+            addNewProductToCart(customer_id=customer_id,product_id=product_id)
 
-    #check if product in cart
-    product_in_cart = False
-    for curr_product in account_specific_shopping_cart:
-        if curr_product['product_id'] == product_id:
-            product_in_cart = True
-            #Update the sql db for incremented product in cart
-            addExistingProductToCart(customer_id=customer_id, product_id=product_id)
-            break
-    
-    if not product_in_cart:
+        return jsonify({"message":"Product Added"}), 200
+    except:
+        # handle none type for account_specific_shopping_cart if user has no cart
         addNewProductToCart(customer_id=customer_id,product_id=product_id)
-
-    return jsonify({"message":"Product Added"}), 200
+        return jsonify({"message":"Product Added"}), 200
+    
 
 # remove item from Shopping Cart
 @user_bp.route('/remove_from_cart', methods=['POST'])
