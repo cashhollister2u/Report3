@@ -174,7 +174,7 @@ def checkOut():
 
 #### admin endpoints
 
-# handle Customer Account Shopping Cart check out
+# handle change of product price
 @user_bp.route('/change_price', methods=['POST'])
 def change_product_price():
     data = request.get_json()
@@ -185,11 +185,9 @@ def change_product_price():
     
     return jsonify({"message":f"Product ID: {product_id} New Price: {new_price}"}), 200
 
-# handle Customer Account Shopping Cart check out
+# handle retrieving customer ids w/ different unique products in cart
 @user_bp.route('/unique_prod_cart', methods=['POST'])
 def unique_prod_in_cart():
-    data = request.get_json()
-
     customer_names = getUsersWithUniqueProducts()
     
     return jsonify(customer_names), 200

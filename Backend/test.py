@@ -54,7 +54,7 @@ try:
     print("Customers with Items in their shopping cart")
     for (name,) in cursor:
         print(f"Customer Name: {name}")
-    # Query 5: Find customer names that have more than one different products in their shoppint cart 
+    # Query 5: Find customer ids that have more than one different products in their shoppint cart 
     query5 = (
                 "SELECT C.customer_id "
                 "FROM customer_account AS C "
@@ -68,7 +68,7 @@ try:
     cursor.execute(query5)
     print("\nQuery 5 Results:")
     result = cursor.fetchall()
-    print(f"Customers with more than one different products in their shoppint cart: ")
+    print(f"Customer ids with more than one different products in their shoppint cart: ")
     print(result)
     
 except mysql.connector.Error as err:

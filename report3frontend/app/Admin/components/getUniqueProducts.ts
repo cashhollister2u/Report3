@@ -4,7 +4,7 @@ import { FormEvent } from "react";
 import { UNIQUE_CART_ITEMS }from '@/flaskEndpoints';
   
 
-const getUniqueProducts = async (e: FormEvent) => {
+const getUniqueProducts = async (e: FormEvent, setCustomerIds: (customer_ids: string[]) => void) => {
   e.preventDefault()
     try {
       const response = await fetch(UNIQUE_CART_ITEMS, {
@@ -17,6 +17,7 @@ const getUniqueProducts = async (e: FormEvent) => {
         // add data type
         const data = await response.json()
         console.log(data)
+        setCustomerIds(data)
       } else {
         console.log('failed to get customers w/ unique items in cart: ', response.status)
     }

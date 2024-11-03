@@ -462,6 +462,9 @@ def getUsersWithUniqueProducts():
     try:
         with connection.cursor(buffered=True) as cursor:
             query = (
+                "SELECT C.customer_id "
+                "FROM customer_account AS C "
+                "WHERE EXISTS( "
                 "SELECT S.customer_id "
                 "FROM shopping_cart AS S "
                 "WHERE S.customer_id = C.customer_id "
