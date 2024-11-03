@@ -453,7 +453,7 @@ def updateProductPrice(product_id, new_price):
         print("Connection returned to pool.")
 
 # displays all the customer_id(s) from the customer_account table that have more than one different item in their shopping cart
-def getUsersWithUniqueProducts(customer_id, product_id):
+def getUsersWithUniqueProducts():
     connection = get_connection_from_pool()
     if connection is None:
         print("Failed to get a connection from the pool.")

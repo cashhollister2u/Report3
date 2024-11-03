@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 
 # Custom imports
 from extensions import bcrypt
-from sql_commands import createCustomerAccount, getCustomerBaseCount, getCustomerAccount, processCheckOut, decrimentProductCountFromCart, removeProductFromCart, getProductDetails, getAllProducts, getShoppingCart, getShoppingCartTotal, addExistingProductToCart, addNewProductToCart
+from sql_commands import getUsersWithUniqueProducts, updateProductPrice, createCustomerAccount, getCustomerBaseCount, getCustomerAccount, processCheckOut, decrimentProductCountFromCart, removeProductFromCart, getProductDetails, getAllProducts, getShoppingCart, getShoppingCartTotal, addExistingProductToCart, addNewProductToCart
 
 user_bp = Blueprint('user', __name__)
 
@@ -170,3 +170,28 @@ def checkOut():
         return jsonify({"message": "Cart is already empty or undefined"}), 400
     
     return jsonify({"message":"Customer Checked Out"}), 200
+
+
+#### admin endpoints
+
+# handle Customer Account Shopping Cart check out
+@user_bp.route('/change_price', methods=['POST'])
+def change_product_price():
+    data = request.get_json()
+    product_id = data['product_id']
+    new_price = data['new_price']
+
+    updateProductPrice(product_id=product_id, new_price=new_price)
+    
+    return jsonify({"message":f"Product ID: {product_id} New Price: {new_price}"}), 200
+
+# handle Customer Account Shopping Cart check out
+@user_bp.route('/unique_prod_cart', methods=['POST'])
+def unique_prod_in_cart():
+    data = request.get_json()
+
+    customer_names = getUsersWithUniqueProducts()
+    
+    return jsonify(customer_names), 200
+
+

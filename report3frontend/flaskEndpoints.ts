@@ -8,3 +8,5 @@ export const ADD_TO_CART = BASE_URL + '/user/add_to_cart';
 export const SHOPPING_CART = BASE_URL + '/user/cart';
 export const REMOVE_FROM_CART = BASE_URL + '/user/remove_from_cart';
 export const CHECK_OUT = BASE_URL + '/user/check_out'
+export const UNIQUE_CART_ITEMS = BASE_URL + '/user/unique_prod_cart'
+export const UPDATE_PRICE = BASE_URL + '/user/change_price'

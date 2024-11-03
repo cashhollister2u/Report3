@@ -1,60 +1,28 @@
 'use client';
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useRouter } from 'next/navigation';
+import { ChangeEvent,useState } from "react";
 
 // Custom imports
-//import { UPDATE_PRICE }from '../../flaskEndpoints';
-//import { UNIQUE_CART_ITEMS }from '../../flaskEndpoints';
+import changePrice from "./components/changePrice";
+import getUniqueProducts from "./components/getUniqueProducts";
 
 interface FormData {
-  name: string
-  email:string;
-  passwd:string;
-  confirmPassword:string;
-  credit_card_num:number
+    product_id: string
+    new_price:number;
 }
 
 export default function Register() {
+    const [priceMessage, setPriceMessage] = useState<string> ("")
+    const [formData, setFormData] = useState<FormData> ({
+        product_id: '',
+        new_price:5.99,
+    })
 
-  const router = useRouter()
-  const [formData, setFormData] = useState<FormData> ({
-    name: '',
-    email:'',
-    passwd:'',
-    confirmPassword:'',
-    credit_card_num: 1234567890123456
-  })
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target
+        setFormData({...formData, [name] : value })
+    }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target
-    setFormData({...formData, [name] : value })
-  }
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    // ensure the password and confirmPasswords match 
-    if (formData.passwd !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-    console.log(formData)
-    try {
-      const response = await fetch("REGISTER", {
-        method : 'POST',
-        headers : {
-          'Content-Type' : 'application/json'
-        },
-        body : JSON.stringify(formData)
-      })
-      if (response.ok) {
-        router.push(`/`)
-      } else {
-        console.log('failed to login: ', response.status)
-    }
-    } catch (error) {
-      console.log('Error: ', error)
-    }
-  }
+  
 
   return (
     <main className="flex min-h-screen bg-white items-center justify-center">
@@ -63,95 +31,45 @@ export default function Register() {
                 <img className="m-2 border-2 border-black rounded" src="amazon_logo.png" alt="Amazon Logo"/>
                 <h1 className="text-black ml-16 font-bold text-2xl">Admin Page</h1>
             </div>
-            <form className="flex flex-col w-4/5 mt-8 space-y-2 border border-black rounded p-6" onSubmit={handleSubmit}>
-                <h2 className="text-lg py-2 text-black font-bold">Create Account  </h2>
-                <label className="text-black">Your name </label>
-                <input
-                    type="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="text-black rounded border border-black"
-                    required
-                />
-                <label className="text-black">email </label>
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="text-black rounded border border-black"
-                    required
-                />
-                <label className="text-black">password </label>
-                <input
-                    type="password"
-                    name="passwd"
-                    value={formData.passwd}
-                    onChange={handleChange}
-                    className="text-black rounded border border-black"
-                    required
-                />
-                <label className="text-black">Re-enter password </label>
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className="text-black rounded border border-black"
-                    required
-                />
-                
-                <div className="flex flex-col items-center justify-center">
-                <input className="bg-yellow-500 rounded px-4 mt-2 w-full p-1 text-white hover:bg-yellow-700" type="submit" value="Continue" />
-                </div>
-            </form>
-            <a className="flex items-center justify-center mt-4 text-black hover:text-gray-700 border border-black shadow-lg rounded p-1 w-1/5" href="/">Already have an account? Sign in</a>
+            <div className="flex flex-col w-4/5 mt-8 space-y-2 border border-black rounded p-6">
+                <h2 className="text-lg py-2 text-black font-bold">Get Customers w/ Multiple Different Products In Shopping Car  </h2>
+                <button 
+                    className="bg-yellow-500 rounded px-4 mt-2 w-full p-1 text-white hover:bg-yellow-700" 
+                    onClick={(e) => {
+                        e.preventDefault;
+                        getUniqueProducts(e)
+                    }}
+                    >
+                    Get Customers 
+                </button>
+            </div>
         </div>
         <div className="flex bg-white h-screen m-10 border-2 rounded border-black items-center justify-center flex-col z-10 w-1/2 font-mono text-sm">
-            <form className="flex m-10 border border-black flex-col w-4/5 mt-8 space-y-2  rounded p-6" onSubmit={handleSubmit}>
-                <h2 className="text-lg py-2 text-black font-bold">Create Account  </h2>
-                <label className="text-black">Your name </label>
+            <form className="flex m-10 border border-black flex-col w-4/5 mt-8 space-y-2  rounded p-6" onSubmit={(e) => changePrice(e, formData.product_id,formData.new_price, setPriceMessage)}>
+                <h2 className="text-lg py-2 text-black font-bold">Change Product Price  </h2>
+                <label className="text-black">Product ID </label>
                 <input
-                    type="name"
-                    name="name"
-                    value={formData.name}
+                    type="text"
+                    name="product_id"
+                    value={formData.product_id}
                     onChange={handleChange}
                     className="text-black rounded border border-black"
                     required
                 />
-                <label className="text-black">email </label>
+                <label className="text-black">New Price </label>
                 <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="new_price"
+                    value={formData.new_price}
                     onChange={handleChange}
                     className="text-black rounded border border-black"
                     required
                 />
-                <label className="text-black">password </label>
-                <input
-                    type="password"
-                    name="passwd"
-                    value={formData.passwd}
-                    onChange={handleChange}
-                    className="text-black rounded border border-black"
-                    required
-                />
-                <label className="text-black">Re-enter password </label>
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className="text-black rounded border border-black"
-                    required
-                />
-                
                 <div className="flex flex-col items-center justify-center">
                 <input className="bg-yellow-500 rounded px-4 mt-2 w-full p-1 text-white hover:bg-yellow-700" type="submit" value="Continue" />
                 </div>
             </form>
+            <p className="text-red-800 font-bold">{priceMessage}</p>
         </div>
     </main>
   );
