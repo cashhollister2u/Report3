@@ -31,34 +31,35 @@ try:
     cursor.execute(query2, (new_price, product_id))
     cnx.commit()  # Commit changes for the update query
     print("\nQuery 2: Product price updated successfully.")
-    # Query 3: Calculate total cost for each customer based on their cart contents
+    # Query 3: Calculate total cost for a specified customer based on their cart contents
     query3 = (
-        "SELECT customer_id, SUM(price * num_of_prod_in_cart) AS total_cost "
-        "FROM shopping_cart NATURAL JOIN product "
-        "GROUP BY customer_id"
-    )
-    cursor.execute(query3)
+                "SELECT customer_id, SUM(price * num_of_prod_in_cart) AS total_cost "
+                "FROM shopping_cart NATURAL JOIN product "
+                "WHERE customer_id = %s "
+                "GROUP BY customer_id "
+            )
+    cursor.execute(query3, (customer_id,))
     print("\nQuery 3 Results:")
     for (customer_id, total_cost) in cursor:
         print(f"Customer ID: {customer_id}, Total Cost: {total_cost}")
-    # Query 4: Select custommer names that already have products in their cart
+    # Query 4: Select the custommer name if the customer has products in their cart
     query4 = (
-        "SELECT name "
-        "FROM customer_account "
-        "WHERE customer_id IN ( "
-        "SELECT customer_id "
-        "FROM shopping_cart); "
-    )
+                "SELECT name "
+                "FROM customer_account AS C "
+                f"WHERE C.customer_id = {customer_id} AND customer_id IN ( "
+                "SELECT customer_id "
+                "FROM shopping_cart) "
+            )
     cursor.execute(query4)
     print("\nQuery 4 Results:")
-    print("Customers with Items in their shopping cart")
+    print("Customer with Items in their shopping cart")
     for (name,) in cursor:
         print(f"Customer Name: {name}")
-    # Query 5: Find customer ids that have more than one different products in their shoppint cart 
+    # Query 5: Select the customer id if the customer has more than one different product in their shoppint cart 
     query5 = (
                 "SELECT C.customer_id "
                 "FROM customer_account AS C "
-                "WHERE EXISTS( "
+                f"WHERE C.customer_id = {customer_id} AND EXISTS( "
                 "SELECT S.customer_id "
                 "FROM shopping_cart AS S "
                 "WHERE S.customer_id = C.customer_id "
@@ -68,7 +69,7 @@ try:
     cursor.execute(query5)
     print("\nQuery 5 Results:")
     result = cursor.fetchall()
-    print(f"Customer ids with more than one different products in their shoppint cart: ")
+    print(f"Customer id with more than one different products in their shoppint cart: ")
     print(result)
     
 except mysql.connector.Error as err:
