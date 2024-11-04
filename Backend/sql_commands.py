@@ -402,8 +402,8 @@ def createCustomerAccount(customer_id, email, name, passwd, address, credit_card
 
 ##### misc admin functionality tools #####
 
-# Query 13 gets all users w/ an active shopping cart 
-def getUsersWithCart():
+# Query 13 checks if specified customer has an active shopping cart 
+def getUsersWithCart(customer_id):
     connection = get_connection_from_pool()
     if connection is None:
         print("Failed to get a connection from the pool.")
@@ -413,14 +413,13 @@ def getUsersWithCart():
         with connection.cursor(buffered=True) as cursor:
             query = (
                 "SELECT name "
-                "FROM customer_account "
-                "WHERE customer_id IN ( "
+                "FROM customer_account AS C "
+                f"WHERE C.customer_id = {customer_id} AND customer_id IN ( "
                 "SELECT customer_id "
                 "FROM shopping_cart) "
             )
             cursor.execute(query)
-            result = cursor.fetchall()
-            print("\nQFetching: customers w/ active carts")
+            result = cursor.fetchone()
             return result
     except mysql.connector.Error as err:
         print(f"Error: {err}")

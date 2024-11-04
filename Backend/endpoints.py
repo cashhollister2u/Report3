@@ -186,13 +186,17 @@ def unique_prod_in_cart():
     try:
         validated_customer_id = getUsersWithUniqueProducts(customer_id=customer_id) # sql query for above note 
         
-        return jsonify(f"{str(validated_customer_id[0])}: \nHas multiple items in their cart"), 200
+        return jsonify(f"'{str(validated_customer_id[0])}': \nHas multiple items in their cart"), 200
     except:
         return jsonify(f"{str(customer_id)}: \nDoes NOT have multiple items in their cart"), 200
 # handle retrieving customer names w/ active shopping cart
 @user_bp.route('/active_carts', methods=['POST'])
 def activeShoppingCart():
-    customer_names = getUsersWithCart() # sql query for above note 
-    
-    return jsonify(customer_names), 200
+    data = request.get_json()
+    customer_id = data['customer_id']
+    try:
+        customer_name = getUsersWithCart(customer_id=customer_id) # sql query for above note 
+        return jsonify(f"'{customer_name[0]}': has a shopping cart"), 200
+    except:
+        return jsonify("No Cart Associated with Custome Id"), 200
 
