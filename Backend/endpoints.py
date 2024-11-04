@@ -178,13 +178,17 @@ def change_product_price():
         return jsonify({"message":f"Product ID: {product_id} New Price: {new_price}"}), 200
 
 
-# handle retrieving customer ids w/ different unique products in cart
+# handle retrieving customer ids w/ products in cart
 @user_bp.route('/unique_prod_cart', methods=['POST'])
 def unique_prod_in_cart():
-    customer_ids = getUsersWithUniqueProducts() # sql query for above note 
-    
-    return jsonify(customer_ids), 200
-
+    data = request.get_json()
+    customer_id = data['customer_id']
+    try:
+        validated_customer_id = getUsersWithUniqueProducts(customer_id=customer_id) # sql query for above note 
+        
+        return jsonify(f"{str(validated_customer_id[0])}: \nHas multiple items in their cart"), 200
+    except:
+        return jsonify(f"{str(customer_id)}: \nDoes NOT have multiple items in their cart"), 200
 # handle retrieving customer names w/ active shopping cart
 @user_bp.route('/active_carts', methods=['POST'])
 def activeShoppingCart():

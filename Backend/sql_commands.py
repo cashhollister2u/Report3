@@ -462,8 +462,8 @@ def updateProductPrice(product_id, new_price):
         connection.close()  # Return the connection to the pool
         print("Connection returned to pool.")
 
-# Query 15 displays all the customer_id(s) from the customer_account table that have more than one different item in their shopping cart
-def getUsersWithUniqueProducts():
+# Query 15 displays the customer_id from the customer_account table if it has more than one product in their shopping cart
+def getUsersWithUniqueProducts(customer_id):
     connection = get_connection_from_pool()
     if connection is None:
         print("Failed to get a connection from the pool.")
@@ -474,7 +474,7 @@ def getUsersWithUniqueProducts():
             query = (
                 "SELECT C.customer_id "
                 "FROM customer_account AS C "
-                "WHERE EXISTS( "
+                f"WHERE C.customer_id = {customer_id} AND EXISTS( "
                 "SELECT S.customer_id "
                 "FROM shopping_cart AS S "
                 "WHERE S.customer_id = C.customer_id "
@@ -482,7 +482,8 @@ def getUsersWithUniqueProducts():
                 "HAVING COUNT(product_id) > 1) "
             )
             cursor.execute(query)
-            result = cursor.fetchall()
+            result = cursor.fetchone()
+            print(result)
             
             return result
     except mysql.connector.Error as err:
