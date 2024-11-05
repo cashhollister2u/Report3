@@ -126,7 +126,7 @@ def addTOCart():
         return jsonify({"message":"Product Added"}), 200
     
 
-# remove item from Shopping Cart
+# remove product from Shopping Cart
 @user_bp.route('/remove_from_cart', methods=['POST'])
 def removeFromCart():
     data = request.get_json()
