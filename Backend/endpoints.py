@@ -36,7 +36,7 @@ def register():
         password = passwd
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         createCustomerAccount(customer_id=customer_id, email=email, name=name, passwd=hashed_password, address=address, credit_card_num=credit_card_num)
-    
+        print("New Customer_Account Created")
         response = {
             'message': 'Customer Account Created',
         }
@@ -57,6 +57,7 @@ def login():
         # check provided email w/ the email in db
         if customer_account[1] == email:
             if bcrypt.check_password_hash(customer_account[3], passwd): #check the hased passwd with the one provided by the customer
+                print("Customer Verified Logging In")
                 return jsonify(access_token="dummy token", customer_id=customer_account[0]), 200 # return customer_id and dummy token
             else:
                 return jsonify({"message":"Invalid credentials"}), 401
