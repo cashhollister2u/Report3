@@ -276,6 +276,7 @@ def getAllProducts():
                     "rating": rating
                 }
                 products.append(product)
+            print(products)
             return products
 
     except mysql.connector.Error as err:
@@ -312,6 +313,7 @@ def getProductDetails(product_id):
                     "price": price,
                     "rating": rating
                 }
+                print(product)
                 return product
             else:
                 print("No product found.")
