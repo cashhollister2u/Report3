@@ -56,6 +56,7 @@ def getShoppingCart(customer_id):
                         "price":price
                     }
                     customer_cart.append(cart_item)
+                    print(customer_cart)
                 return customer_cart
 
     except mysql.connector.Error as err:
