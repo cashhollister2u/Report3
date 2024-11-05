@@ -60,9 +60,9 @@ def login():
                 print("Customer Verified Logging In")
                 return jsonify(access_token="dummy token", customer_id=customer_account[0]), 200 # return customer_id and dummy token
             else:
-                print("Bad Login Credencials")
                 return jsonify({"message":"Invalid credentials"}), 401
     except:
+        print("Bad Login Credencials")
         return jsonify({"message":"Invalid credentials"}), 401
 
 
