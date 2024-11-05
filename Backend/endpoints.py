@@ -87,14 +87,15 @@ def productInfo():
 @user_bp.route('/cart', methods=['POST'])
 def cart():
     data = request.get_json()
-    # call sql database for user shopping cart
-    account_specific_shopping_cart = getShoppingCart(customer_id=data['customer_id'])
-
-    # sql query to calculate Shopping Cart Total 
-    total = getShoppingCartTotal(customer_id=data['customer_id'])
+    try:
+        # call sql database for user shopping cart
+        account_specific_shopping_cart = getShoppingCart(customer_id=data['customer_id'])
+        # sql query to calculate Shopping Cart Total 
+        total = getShoppingCartTotal(customer_id=data['customer_id'])
         
-    return jsonify({"shopping_cart": account_specific_shopping_cart, "total": total}), 201
-
+        return jsonify({"shopping_cart": account_specific_shopping_cart, "total": total}), 201
+    except:
+        return jsonify({"shopping_cart": [], "total": 0}), 201
 
 # add item to Shopping Cart
 @user_bp.route('/add_to_cart', methods=['POST'])

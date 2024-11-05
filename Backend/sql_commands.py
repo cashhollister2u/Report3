@@ -77,21 +77,27 @@ def getShoppingCartTotal(customer_id):
 
     try:
         with connection.cursor(buffered=True) as cursor:
-            query3 = (
-                "SELECT customer_id, SUM(price * num_of_prod_in_cart) AS total_cost "
-                "FROM shopping_cart NATURAL JOIN product "
-                "WHERE customer_id = %s "
-                "GROUP BY customer_id "
+            # query to execute the procedure
+            sub_query = (
+                "CALL cart_total(%s, @c_total) "
             )
-            cursor.execute(query3, (customer_id,))
+            cursor.execute(sub_query, (customer_id,))
+            #query to select the returned value of the procedure
+            query = (
+                "SELECT @c_total "
+            )
+            cursor.execute(query)
             results = cursor.fetchall()
+            print(results)
             if not results:
                 print(f"No data found for customer_id {customer_id}.")
             else:
                 print("\nQuery 3 Results:")
-                for (customer_id, total_cost) in results:
+                for (total_cost) in results:
                     print(f"Customer ID: {customer_id}, Total Cost: {total_cost}")
-                    return total_cost
+                    # rounded the value in the tuple and reassigned to new tuple => parent expects tuple object
+                    rounded_total_cost = (round(total_cost[0], 2),)
+                    return rounded_total_cost
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -358,7 +364,7 @@ def getCustomerBaseCount():
     try:
         with connection.cursor(buffered=True) as cursor:
             query = (
-                "select count(*) from customer_account "
+                "select customer_count() "
             )
             cursor.execute(query)
             result = cursor.fetchone()
