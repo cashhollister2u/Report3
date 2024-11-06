@@ -41,7 +41,7 @@ CREATE TABLE `customer_account` (
 
 LOCK TABLES `customer_account` WRITE;
 /*!40000 ALTER TABLE `customer_account` DISABLE KEYS */;
-INSERT INTO `customer_account` VALUES ('00001','me@me','me','$2b$12$owe2vvyNrx9DihOdtgo9V.qY3EnsHNznLBE433JDWhxkHzlZ4G4Eq','12345 road lane',1234567890123456),('00002','you@you','you','$2b$12$2oynhJ.G94xzFyHRuiZ3JegcYtNZGpq7wpM2l607txCVwLz7MhE/C','12345 road lane',1234567890123456),('00003','us@us','us','$2b$12$9i2kXGhLeviUbbhv.aBYiOvwFhy29HjceBTS9DOmU23JqwuXJ5N2q','12345 road lane',1234567890123456),('00004','jim@jim','jim','$2b$12$xjpeb9BKN5ErozDHlAMWxuWRcfFR8noomPZjbIqFWyYOrVT9kRDva','12345 road lane',1234567890123456),('00005','tod@tod','tod','$2b$12$EiuVs1BtFhAtxagD6pUi7u5nAK4xVtIL1m0lQlfx4YuAtDpyFX8jG','12345 road lane',1234567890123456),('00006','cash@cash','cash','$2b$12$kZQsWhQkzlvOxR00EdrVauYhmr.9os49xmrl2dBXh3hykohjCqLDy','12345 road lane',1234567890123456),('00007','rob@rob','rob','$2b$12$gTexuhJuQ6XLGY1v7cKaE..sigUQ.ljtDqN48SGLRodCdu7w5mgJG','12345 road lane',1234567890123456),('00008','rich@rich','rich','$2b$12$0elQ9EepdH/e.4t2BvskkuopVmPiepQUx.Wz2vEnCnPgPDBCkJrr2','12345 road lane',1234567890123456),('00009','tim@tim','tim','$2b$12$F/MCmirMrLmxi9Q1SIDVROZYb.MAnh1Jj.H10uyx0Io56nABURrle','12345 road lane',1234567890123456);
+INSERT INTO `customer_account` VALUES ('00001','me@me','me','$2b$12$owe2vvyNrx9DihOdtgo9V.qY3EnsHNznLBE433JDWhxkHzlZ4G4Eq','12345 road lane',1234567890123456),('00002','you@you','you','$2b$12$2oynhJ.G94xzFyHRuiZ3JegcYtNZGpq7wpM2l607txCVwLz7MhE/C','12345 road lane',1234567890123456),('00003','us@us','us','$2b$12$9i2kXGhLeviUbbhv.aBYiOvwFhy29HjceBTS9DOmU23JqwuXJ5N2q','12345 road lane',1234567890123456),('00004','jim@jim','jim','$2b$12$xjpeb9BKN5ErozDHlAMWxuWRcfFR8noomPZjbIqFWyYOrVT9kRDva','12345 road lane',1234567890123456),('00005','tod@tod','tod','$2b$12$EiuVs1BtFhAtxagD6pUi7u5nAK4xVtIL1m0lQlfx4YuAtDpyFX8jG','12345 road lane',1234567890123456),('00006','cash@cash','cash','$2b$12$kZQsWhQkzlvOxR00EdrVauYhmr.9os49xmrl2dBXh3hykohjCqLDy','12345 road lane',1234567890123456),('00007','rob@rob','rob','$2b$12$gTexuhJuQ6XLGY1v7cKaE..sigUQ.ljtDqN48SGLRodCdu7w5mgJG','12345 road lane',1234567890123456),('00008','rich@rich','rich','$2b$12$0elQ9EepdH/e.4t2BvskkuopVmPiepQUx.Wz2vEnCnPgPDBCkJrr2','12345 road lane',1234567890123456),('00009','tim@tim','tim','$2b$12$F/MCmirMrLmxi9Q1SIDVROZYb.MAnh1Jj.H10uyx0Io56nABURrle','12345 road lane',1234567890123456),('00010','tyler@tyler','tyler','$2b$12$eK.d2bLk.mbWOm/ZSpdGJ.uwUkjyZPp.350g2IbpeEEfjLnNQfGFm','12345 road lane',1234567890123456),('00011','good@credentials','good','$2b$12$B21TmB/AIrw1W.mIoYsdX.j2wGvDdGdJLHtcs3/er0mVRm7rppb3C','12345 road lane',1234567890123456),('00012','user@user','user','$2b$12$39ZO.tBgTVBhmI.ScX.HNuHJdbHbQ2MPv7eu4yiTvz6iOdOkxkY3a','12345 road lane',1234567890123456);
 /*!40000 ALTER TABLE `customer_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES ('00001','Case of water','00001',10.99,1),('00002','JOLLY RANCHER','00002',12.99,4),('00003','Ground Coffee','00003',9.99,5),('00004','Hand Soap','00003',12.99,5),('00005','SHARPIES','00004',20.99,3),('00006','Toothbrushes','00006',24.99,3);
+INSERT INTO `product` VALUES ('00001','Case of water','00001',500.99,1),('00002','JOLLY RANCHER','00002',12.99,4),('00003','Ground Coffee','00003',9.99,5),('00004','Hand Soap','00003',12.99,5),('00005','SHARPIES','00004',20.99,3),('00006','Toothbrushes','00006',24.99,3);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +147,7 @@ CREATE TABLE `shopping_cart` (
 
 LOCK TABLES `shopping_cart` WRITE;
 /*!40000 ALTER TABLE `shopping_cart` DISABLE KEYS */;
-INSERT INTO `shopping_cart` VALUES ('00001','00001',2),('00001','00002',2),('00002','00003',2),('00002','00004',2),('00003','00002',2),('00003','00004',2),('00004','00004',2),('00004','00005',2),('00005','00005',2),('00005','00006',2),('00006','00001',1);
+INSERT INTO `shopping_cart` VALUES ('00001','00001',2),('00001','00002',2),('00002','00001',2),('00003','00002',2),('00003','00004',2),('00004','00004',2),('00004','00005',2),('00005','00005',2),('00005','00006',2),('00006','00001',1),('00010','00001',2);
 /*!40000 ALTER TABLE `shopping_cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,4 +178,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-03 17:34:05
+-- Dump completed on 2024-11-05 18:29:54
