@@ -10,6 +10,7 @@
 4. Ensure all dependancies for Mysql are installed:
 - Ensure MySql is installed on your device
 - Ensure the amazon_marketplace.sql dump file is loaded into your MySql instance
+- Ensure the password in the "sql_commands.py file in the Backend Dir Matches the password used to access your instance of MySql
 5. Ensure all dependancies Next.js are installed:
 - install "node"
   - "brew install node" (mac users)
