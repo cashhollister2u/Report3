@@ -429,6 +429,7 @@ def getUsersWithCart(customer_id):
             )
             cursor.execute(query)
             result = cursor.fetchone()
+            print(f"{result} has an active shopping cart")
             return result
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -461,6 +462,7 @@ def updateProductPrice(product_id, new_price):
             )
             cursor.execute(query)
             connection.commit()
+            print(f"{product_id} New Price: {new_price}, Updated")
             return True
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -491,6 +493,7 @@ def getUsersWithUniqueProducts(customer_id):
             )
             cursor.execute(query)
             result = cursor.fetchone()
+            print(f"{customer_id} has a different products in their cart")
             print(result)
             
             return result

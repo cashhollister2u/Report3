@@ -45,7 +45,8 @@ export default function Register() {
             <div className="flex flex-row ml-16 w-1/2 space-x-4">
                 <div>
                     <div className="flex flex-col w-full  mt-8 space-y-2 border border-black rounded p-6">
-                        <h2 className="text-lg py-2 text-black font-bold">Get Customers w/ Active Shopping Car  </h2>
+                        <h2 className="text-lg py-2 text-black font-bold">Check if customer has an active shopping cart  </h2>
+                        <label className="text-black">Customer ID </label>
                         <input
                             type="text"
                             name="customer_id_cart_check"
@@ -61,7 +62,7 @@ export default function Register() {
                                 getCustomerActiveCarts(e, formData.customer_id_cart_check,setActiveCartMsg)
                             }}
                             >
-                            Get Customers 
+                            Check 
                         </button>
                     </div>
                     <h3 className="font-bold text-lg mt-4 text-black">Customer Names:</h3>
@@ -72,6 +73,7 @@ export default function Register() {
                 <div>
                     <div className="flex flex-col w-full  mt-8 space-y-2 border border-black rounded p-6">
                         <h2 className="text-lg py-2 text-black font-bold">Check if Customer Id has multiple products in shopping cart  </h2>
+                        <label className="text-black">Customer ID </label>
                         <input
                             type="text"
                             name="customer_id"
@@ -87,7 +89,7 @@ export default function Register() {
                                 getUniqueProducts(e, formData.customer_id, setMultipleItemsMsg)
                             }}
                             >
-                            Get Customers 
+                            Check 
                         </button>
                     </div>
                     <h3 className="font-bold text-lg mt-4 text-black">Customer Ids:</h3>
@@ -129,7 +131,7 @@ export default function Register() {
                 <input className="bg-yellow-500 rounded px-4 mt-2 w-full p-1 text-white hover:bg-yellow-700" type="submit" value="Continue" />
                 </div>
             </form>
-            <p className="text-red-800 font-bold">{priceMessage}</p>
+            <p className="text-red-500 font-bold">{priceMessage}</p>
         </div>
     </main>
   );
